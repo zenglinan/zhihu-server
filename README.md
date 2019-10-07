@@ -125,3 +125,14 @@ router.get('/', async (ctx) => {
 1. 用户登录，服务器检查用户名密码是否正确，无误则返回 token，不正确则抛出 401
 2. 前端带着 token 访问其他接口，服务器获取 token，进行 token 校验，不合法则返回，合法则检验权限
 3. 检验用户是否有权限(比如修改用户接口只能修改自己的)，无权限则抛出 403
+
+## 上传图片方案
+- 阿里云 OSS 等云服务
+- 直接上传到服务器(不推荐，服务器挂掉后会丢失数据)
+
+使用 koa-body 解析上传的文件并保存到配置路径
+使用 koa-static 生成图片链接
+```javascript
+`${ctx.origin}/uploads/${path.basename(file.path)}`
+```
+ctx.origin 可以获取请求的来源，path.basename 可以返回路径的最后一部分
