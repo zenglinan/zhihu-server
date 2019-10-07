@@ -135,4 +135,5 @@ router.get('/', async (ctx) => {
 ```javascript
 `${ctx.origin}/uploads/${path.basename(file.path)}`
 ```
-ctx.origin 可以获取请求的来源，path.basename 可以返回路径的最后一部分
+url 不能写死，不然上线后还需要修改。用ctx.origin 可以获取请求的来源，path.basename 可以返回路径的最后一部分
+

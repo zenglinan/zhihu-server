@@ -29,7 +29,8 @@ class UserController {
   async create(ctx){
     ctx.verifyParams({
       name: { type: 'string', required: true },
-      password: { type: 'string', require: true }
+      password: { type: 'string', require: true },
+      sex: { type: 'string', required: true}
     })
     const { name } = ctx.request.body
     const username = await userModel.findOne({ name })
@@ -43,10 +44,17 @@ class UserController {
   async update(ctx){
     ctx.verifyParams({
       name: { type: 'string', required: false },
-      password: { type: 'string', required: false }
+      password: { type: 'string', required: false },
+      banner: { type: 'string', required: false },
+      avatar: { type: 'string', required: false },
+      sex: { type: 'string', required: false },
+      headline: { type: 'string', required: false },
+      resident: { type: 'array', itemType: 'string', required: false},
+      career : { type: 'array', itemType: 'object', required: false },
+      educations: { type: 'array', itemType: 'object', required: false }
     })
     const user = await userModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
-    if(!user) { 
+    if(!user) {
       ctx.throw(404, '用户不存在')
     }
     ctx.body = user

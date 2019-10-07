@@ -10,7 +10,7 @@ const autoUseRouter = require('./router/autoUseRouter')
 
 const app = new Koa()
 
-mongoose.connect(connectUrl, {useUnifiedTopology: true, useNewUrlParser: true},(err) => {
+mongoose.connect(connectUrl, { useUnifiedTopology: true, useNewUrlParser: true },(err) => {
   if(err) console.error('mongoose 出错了',err)
   else {
     console.log('mongoose 连接成功！')
