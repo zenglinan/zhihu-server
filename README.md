@@ -137,3 +137,11 @@ router.get('/', async (ctx) => {
 ```
 url 不能写死，不然上线后还需要修改。用ctx.origin 可以获取请求的来源，path.basename 可以返回路径的最后一部分
 
+## 用户列表返回字段的过滤
+mongodb 可以用 ```select: false``` 默认隐藏一些字段，当需要显示时，通过 ```find().select('+xxx +yyy')``` 加入字段
+
+在用户 Schema 中默认不显示的字段，加上 ```select: false```，当需要显示默认隐藏字段时，
+
+前端在查询参数中写入字段名 ```?fields=resident;career```, 以分号隔开。
+
+后端获取查询参数中的字段，在查询时加上这些字段
