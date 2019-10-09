@@ -150,3 +150,35 @@ const queryFields = ctx.query.fields
 const formatFields = queryFields.split(';').filter(f => f).map(f => `+${f}`).join(' ')
 const user = await userModel.findById(ctx.params.id).select(formatFields)
 ```
+
+## 我关注的人与关注我的人
+我关注的人的 Schema 设计，关注的人保存的是用户的 id，类型可以跟 User 里面的 id 关联起来
+```javascript
+followings: {
+  type: [{
+    type: Schema.Types.ObjectId, ref: 'User'
+  }],
+  select: false
+}
+```
+
+### 获取我关注的人列表
+当获取```我关注的人```的列表时，除了需要获取到那些用户的 id，还需要获取一些基本用户信息，
+
+通过 populate 可以填充数据，前提是对应字段的类型关联了 User 里的 ObjectId
+```javascript
+userModel.findById(ctx.params.id).select('+followings').populate('followings')
+```
+### 关注
+只需将当前登录用户的 followings 字段添加 关注的人的 id 即可
+
+这里要注意的是：
+
+followings 虽然是数组，但是没有 js 数组的方法，需要进行转换
+字段也需要转换成字符串
+
+```javascript
+if(!me.followings.map(id => id.toString()).includes(targetUserId)){
+  // ...
+}
+```

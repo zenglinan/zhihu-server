@@ -39,7 +39,7 @@ class UserController {
     ctx.body = user
   }
 
-  async update(ctx){
+  async update(ctx){  // 更新用户资料
     ctx.verifyParams({
       name: { type: 'string', required: false },
       password: { type: 'string', required: false },
@@ -57,7 +57,7 @@ class UserController {
     }
     ctx.body = user
   }
-  async delete(ctx){
+  async delete(ctx){  // 删除用户
     const user = await userModel.findByIdAndRemove(ctx.params.id, ctx.request.id)
     if(!user) {
       ctx.throw(404, '用户不存在')
@@ -91,9 +91,11 @@ class UserController {
     const myId = ctx.state.user._id
     const targetUserId = ctx.params.id
     const me = await userModel.findById(myId).select('+followings')
-    me.followings.push(targetUserId)
-    me.save()
-    ctx.status = 204
+    if(!me.followings.map(id => id.toString()).includes(targetUserId)){
+      me.followings.push(targetUserId)
+      me.save()
+      ctx.status = 204
+    }
   }
 }
 
