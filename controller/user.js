@@ -1,17 +1,12 @@
 const userModel = require('../dbs/model/user')
 const jsonwebtoken = require('jsonwebtoken')
-const jwt = require('koa-jwt')
 const secret = 'i_love_linan_#HaHa'
 
 class UserController {
-  async auth(ctx, next) { // 登录认证
-    const result = await jwt({ secret, key: 'user' })
-    await next()
-  }
 
   async checkOwner(ctx, next){  // 权限校验, 操作 id 是否为当前登录 id
     if(ctx.params.id !== ctx.state.user._id){
-      ctx.throw(403, '无此权限')
+      ctx.throw(403, '没有权限')
     }
     await next()
   }
@@ -23,9 +18,8 @@ class UserController {
 
   async findById(ctx){
     // 通过查询参数 fields 指定要显示的默认隐藏字段
-    const queryFields = ctx.query.fields
+    const queryFields = ctx.query.fields || ''
     const formatFields = queryFields.split(';').filter(f => f).map(f => `+${f}`).join(' ')
-    console.log('formatFields', formatFields)
     const user = await userModel.findById(ctx.params.id).select(formatFields)
     ctx.body = user
   }
@@ -83,6 +77,23 @@ class UserController {
     const { _id, name } = user
     const token = jsonwebtoken.sign({_id, name}, secret, { expiresIn: '1d' })
     ctx.body = { token, name, _id }
+  }
+
+  async getFollowingList(ctx){  // 关注的人列表
+    const userWithFollowings = await userModel.findById(ctx.params.id).select('+followings').populate('followings')
+    if(!userWithFollowings){
+      ctx.throw(404, '用户不存在')
+    }
+    ctx.body = userWithFollowings.followings
+  }
+
+  async follow(ctx){  // 关注某个用户
+    const myId = ctx.state.user._id
+    const targetUserId = ctx.params.id
+    const me = await userModel.findById(myId).select('+followings')
+    me.followings.push(targetUserId)
+    me.save()
+    ctx.status = 204
   }
 }
 

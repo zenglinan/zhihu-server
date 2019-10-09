@@ -145,3 +145,8 @@ mongodb 可以用 ```select: false``` 默认隐藏一些字段，当需要显示
 前端在查询参数中写入字段名 ```?fields=resident;career```, 以分号隔开。
 
 后端获取查询参数中的字段，在查询时加上这些字段
+```javascript
+const queryFields = ctx.query.fields
+const formatFields = queryFields.split(';').filter(f => f).map(f => `+${f}`).join(' ')
+const user = await userModel.findById(ctx.params.id).select(formatFields)
+```
