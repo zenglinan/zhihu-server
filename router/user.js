@@ -24,4 +24,6 @@ router.get('/:id/following', user.getFollowingList)
 
 router.patch('/follow/:id', auth, user.follow)
 
+router.patch('/unfollow/:id', auth, user.unfollow)
+
 module.exports = router

@@ -2,6 +2,7 @@ const userModel = require('../dbs/model/user')
 const jsonwebtoken = require('jsonwebtoken')
 const secret = 'i_love_linan_#HaHa'
 
+
 class UserController {
 
   async checkOwner(ctx, next){  // 权限校验, 操作 id 是否为当前登录 id
@@ -95,7 +96,21 @@ class UserController {
       me.followings.push(targetUserId)
       me.save()
       ctx.status = 204
+    }else {
+      ctx.body = '请勿重复关注！'
     }
+  }
+
+  async unfollow(ctx){
+    const myId = ctx.state.user._id
+    const targetUserId = ctx.params.id
+    const me = await userModel.findById(myId).select('+followings')
+    const targetIndex = me.followings.map(id => id.toString()).indexOf(targetUserId)  // 目标用户的 id 在关注列表中的索引
+    if(targetIndex > -1){
+      me.followings.splice(targetIndex, 1)
+      me.save()
+    }
+    ctx.status = 204
   }
 }
 
