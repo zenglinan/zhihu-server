@@ -12,7 +12,7 @@ class UserController {
     await next()
   }
 
-  async find(ctx) {
+  async findAll(ctx) {
     const users = await userModel.find()
     ctx.body = { users }
   }

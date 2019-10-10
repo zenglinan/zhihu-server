@@ -9,11 +9,11 @@ const UserSchema = new Schema({
   sex: { type: String, enum: ['male', 'female'], required: true },
   headline: { type: String },
   resident: { type: [{ type: String }], select: false },
-  career : { 
+  career : {
     type: [{
       company: { type: String },
       job: { type: String }
-    }], 
+    }],
     select: false
   },
   educations: {

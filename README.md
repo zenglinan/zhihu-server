@@ -185,3 +185,8 @@ if(!me.followings.map(id => id.toString()).includes(targetUserId)){
 ```
 ### 获取粉丝列表
 因为粉丝不同于关注的人，关注的人不会特别多，但粉丝可能会很多，所以不适合作为 Schema 的字段，只需要查找所有用户，找出关注的人包含指定 id 的用户，就可以找出指定 id 用户的粉丝列表
+
+mongoose 的语法里，要找出指定字段包含某个内容时十分灵活，比如：followings 是数组，如下匹配即可
+```javascript
+  const followers = await userModel.find({ followings: ctx.params.id })
+```
