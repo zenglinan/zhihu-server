@@ -58,6 +58,7 @@ class UserController {
     }
     ctx.body = user
   }
+
   async delete(ctx){  // 删除用户
     const user = await userModel.findByIdAndRemove(ctx.params.id, ctx.request.id)
     if(!user) {
@@ -86,6 +87,11 @@ class UserController {
       ctx.throw(404, '用户不存在')
     }
     ctx.body = userWithFollowings.followings
+  }
+
+  async getFollowerList(ctx){
+    const followers = await userModel.find({ followings: ctx.params.id })
+    ctx.body = followers
   }
 
   async follow(ctx){  // 关注某个用户
