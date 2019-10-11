@@ -1,7 +1,15 @@
 const userModel = require('../dbs/model/user')
 const jsonwebtoken = require('jsonwebtoken')
+const { secret } = require('../dbs/config')
 
 class UserController {
+
+  async checkUserExist(ctx, next){
+    const id = ctx.params.id
+    const user = await userModel.findById(id)
+    if(!user) ctx.throw(404, '用户不存在')
+    await next()
+  }
 
   async checkOwner(ctx, next){  // 权限校验, 操作 id 是否为当前登录 id
     if(ctx.params.id !== ctx.state.user._id){
@@ -85,7 +93,9 @@ class UserController {
   }
 
   async getFollowingList(ctx){  // 关注的人列表
-    const userWithFollowings = await userModel.findById(ctx.params.id).select('+followings').populate('followings')
+    const userWithFollowings = await userModel
+      .findById(ctx.params.id)
+      .select('+followings').populate('followings')
     if(!userWithFollowings){
       ctx.throw(404, '用户不存在')
     }
@@ -111,7 +121,7 @@ class UserController {
   }
 
   async unfollow(ctx){
-    const myId = ctx.state.user._id
+    const myId = ctx.state.user._id // 当前登录用户的 id
     const targetUserId = ctx.params.id
     const me = await userModel.findById(myId).select('+followings')
     const targetIndex = me.followings.map(id => id.toString()).indexOf(targetUserId)  // 目标用户的 id 在关注列表中的索引
@@ -120,6 +130,40 @@ class UserController {
       me.save()
     }
     ctx.status = 204
+  }
+
+  async followTopic(ctx){ // 关注话题
+    const myId = ctx.state.user._id
+    const topicId = ctx.params.id
+    const me = await userModel.findById(myId).select('+followingTopics')
+    if(me.followingTopics.indexOf(topicId) === -1){
+      me.followingTopics.push(topicId)
+      me.save()
+      ctx.status = 204
+    }
+    ctx.body = '请勿重复关注同一话题！'
+  }
+
+  async unfollowTopic(ctx){
+    const myId = ctx.state.user._id
+    const topicId = ctx.params.id
+    const me = await userModel.findById(myId).select('+followingTopics')
+    const targetIndex = me.followingTopics.map(id => id.toString()).indexOf(topicId)
+    if(targetIndex !== -1){
+      me.followingTopics.splice(targetIndex, 1)
+      me.save()
+      ctx.status = 204
+    }
+    ctx.body = '该用户尚未关注此话题！'
+  }
+
+  async getFollowingTopic(ctx){ // 获取用户关注的话题
+    const id = ctx.params.id
+    const user = await userModel
+      .findById(id)
+      .select('+followingTopics')
+      .populate('followingTopics')
+    ctx.body = { topics: user.followingTopics }
   }
 }
 

@@ -25,8 +25,14 @@ router.get('/:id/following', user.getFollowingList)
 
 router.get('/:id/follower', user.getFollowerList)
 
-router.patch('/follow/:id', auth, user.follow)
+router.patch('/follow/:id', auth, user.checkUserExist, user.follow)
 
-router.delete('/unfollow/:id', auth, user.unfollow)
+router.delete('/unfollow/:id', auth, user.checkUserExist, user.unfollow)
+
+router.get('/:id/topics', auth, user.getFollowingTopic)
+
+router.patch('/follow_topic/:id', auth, user.followTopic)
+
+router.delete('/unfollow_topic/:id', auth, user.unfollowTopic)
 
 module.exports = router
