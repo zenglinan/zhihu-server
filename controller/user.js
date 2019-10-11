@@ -1,7 +1,5 @@
 const userModel = require('../dbs/model/user')
 const jsonwebtoken = require('jsonwebtoken')
-const secret = 'i_love_linan_#HaHa'
-
 
 class UserController {
 

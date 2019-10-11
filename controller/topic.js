@@ -23,6 +23,16 @@ class TopicController{
       topic: newTopic
     }
   }
+
+  async update(ctx){
+    ctx.verifyParams({
+      name: { type: 'string', required: false },
+      avatar: { type: 'string', required: false },
+      introduction: { type: 'string', required: false }
+    })
+    const topic = await topicModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
+    ctx.body = topic
+  }
 }
 
 module.exports = new TopicController()

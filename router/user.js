@@ -1,12 +1,13 @@
 const Router = require('koa-router')
 const user = require('../controller/user')
 const jwt = require('koa-jwt')
+const { secret } = require('../dbs/config')
 
 const router = new Router({
   prefix: "/users"
 })
 
-const auth = jwt({secret: 'i_love_linan_#HaHa'})
+const auth = jwt({ secret })
 
 router.get('/', user.findAll)
 
