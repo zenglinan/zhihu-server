@@ -192,7 +192,23 @@ mongoose 的语法里，要找出指定字段包含某个内容时十分灵活�
 ```
 
 ### 分页查询
-利用 mongodb 的 limit 限制返回的条数(每页条数)，用 skip 跳过的条数(页码 * 每页的条数)。页码从 0 开始，就不用 - 1
+利用 mongodb 的 limit 限制返回的条数(每页条数)，用 skip 跳过的条数(页码 * 每页的条数)。
+前端发来要请求的页码数和每页条数
+
+**页码从 0 开始，就不用 -1**
 ```javascript
 topicModel.find().limit(perPageSum).skip(page*perPageSum)
+```
+
+注意做好边界处理
+```javascript
+let { per_page: perPageSum = 10, page = 0 } = ctx.query // 如果不传，默认为第 0 页，每页 10 条
+page = Math.max(+page, 0) // 负数检测过滤，最少第 0 页
+perPageSum = Math.max(+perPageSum, 1)  // 负数检测过滤，最少返回 1 条
+```
+
+### 模糊搜索
+前端将关键字发到后端，后端利用 mongodb 里提供的正则匹配方法，将关键字作为正则匹配的内容，实现模糊搜索
+```javascript
+topicModel.find({ name: new RegExp(ctx.query.keyword) })
 ```
