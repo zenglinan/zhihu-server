@@ -8,7 +8,7 @@ const router = new Router({
 
 const auth = jwt({ secret })
 
-router.get('/', topic.findAll)
+router.get('/', topic.find)
 
 router.get('/:id', topic.findById)
 

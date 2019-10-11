@@ -1,8 +1,11 @@
 const topicModel = require('../dbs/model/topic')
 
 class TopicController{
-  async findAll(ctx){  
-    ctx.body = await topicModel.find()
+  async find(ctx){  // 分页查询, 页码从 0 开始
+    let { per_page: perPageSum = 10, page = 0 } = ctx.query
+    page = Math.max(+page, 0) // 负数检测过滤，最少第 0 页
+    perPageSum = Math.max(+perPageSum, 1)  // 负数检测过滤，最少返回 1 条
+    ctx.body = await topicModel.find().limit(perPageSum).skip(page*perPageSum)
   }
 
   async findById(ctx){

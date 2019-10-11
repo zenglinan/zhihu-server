@@ -190,3 +190,9 @@ mongoose 的语法里，要找出指定字段包含某个内容时十分灵活�
 ```javascript
   const followers = await userModel.find({ followings: ctx.params.id })
 ```
+
+### 分页查询
+利用 mongodb 的 limit 限制返回的条数(每页条数)，用 skip 跳过的条数(页码 * 每页的条数)。页码从 0 开始，就不用 - 1
+```javascript
+topicModel.find().limit(perPageSum).skip(page*perPageSum)
+```

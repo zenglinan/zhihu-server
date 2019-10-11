@@ -9,7 +9,7 @@ const router = new Router({
 
 const auth = jwt({ secret })
 
-router.get('/', user.findAll)
+router.get('/', user.find)
 
 router.post('/', user.create)
 
