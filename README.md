@@ -212,3 +212,13 @@ perPageSum = Math.max(+perPageSum, 1)  // 负数检测过滤，最少返回 1 �
 ```javascript
 topicModel.find({ name: new RegExp(ctx.query.keyword) })
 ```
+
+### 校验用户 id 是否存在
+todo：这里为啥错误捕获必须得用 .catch ?
+```javascript
+async checkUserExist(ctx, next) {
+  const user = await userModel.findById(ctx.params.id)
+    .catch(e => { ctx.throw(404, '用户不存在') })
+  await next();
+}
+```

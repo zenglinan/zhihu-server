@@ -1,6 +1,13 @@
 const topicModel = require('../dbs/model/topic')
 
 class TopicController{
+
+  async checkTopicExist(ctx, next) {
+    const user = await topicModel.findById(ctx.params.id)
+      .catch(e => { ctx.throw(404, '话题不存在') })
+    await next();
+  }
+
   async find(ctx){  // 分页查询, 页码从 0 开始
     let { per_page: perPageSum = 10, page = 0 } = ctx.query
     page = Math.max(+page, 0) // 负数检测过滤，最少第 0 页

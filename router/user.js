@@ -2,6 +2,7 @@ const Router = require('koa-router')
 const user = require('../controller/user')
 const jwt = require('koa-jwt')
 const { secret } = require('../dbs/config')
+const { checkTopicExist } = require('../controller/topic')
 
 const router = new Router({
   prefix: "/users"
@@ -31,8 +32,8 @@ router.delete('/unfollow/:id', auth, user.checkUserExist, user.unfollow)
 
 router.get('/:id/topics', auth, user.getFollowingTopic)
 
-router.patch('/follow_topic/:id', auth, user.followTopic)
+router.patch('/follow_topic/:id', auth, checkTopicExist, user.followTopic)
 
-router.delete('/unfollow_topic/:id', auth, user.unfollowTopic)
+router.delete('/unfollow_topic/:id', auth, checkTopicExist, user.unfollowTopic)
 
 module.exports = router

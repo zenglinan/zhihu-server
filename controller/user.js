@@ -4,11 +4,10 @@ const { secret } = require('../dbs/config')
 
 class UserController {
 
-  async checkUserExist(ctx, next){
-    const id = ctx.params.id
-    const user = await userModel.findById(id)
-    if(!user) ctx.throw(404, '用户不存在')
-    await next()
+  async checkUserExist(ctx, next) {
+    const user = await userModel.findById(ctx.params.id)
+      .catch(e => { ctx.throw(404, '用户不存在') })
+    await next();
   }
 
   async checkOwner(ctx, next){  // 权限校验, 操作 id 是否为当前登录 id
